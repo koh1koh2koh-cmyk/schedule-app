@@ -6,12 +6,13 @@
     <title>منظم المواعيد والدروس الشامل</title>
 
     <!-- إعدادات تطبيق الهاتف (PWA) -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./icon.png">
     <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="الجدول الدراسي">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-title" content="الجدول">
 
     <style>
         :root {
@@ -92,23 +93,6 @@
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        .profile-switcher {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: var(--card-bg);
-            padding: 12px 18px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .profile-switcher label {
-            font-weight: bold;
-            white-space: nowrap;
-            margin: 0;
         }
 
         .view-section { display: none; }
@@ -334,15 +318,6 @@
             <span id="clock">00:00:00</span>
         </div>
 
-        <!-- تبديل الشخصية (أحمد / محمد) -->
-        <div class="profile-switcher">
-            <label for="studentSelect">🎓 اختر الطالب:</label>
-            <select id="studentSelect" onchange="changeStudentProfile()">
-                <option value="ahmed">جدول أحمد بليغ</option>
-                <option value="mohamed">جدول محمد بليغ</option>
-            </select>
-        </div>
-
         <div id="readOnlyNotice" class="view-only-banner" style="display: none;">
             👀 أنت تعرض الآن جدولاً مشاركاً (وضع القراءة فقط).
         </div>
@@ -383,13 +358,13 @@
                         <div class="form-group full-width">
                             <label>اليوم:</label>
                             <select id="day" required>
-                                <option value="Saturday">السبت</option>
                                 <option value="Sunday">الأحد</option>
                                 <option value="Monday">الإثنين</option>
                                 <option value="Tuesday">الثلاثاء</option>
                                 <option value="Wednesday">الأربعاء</option>
                                 <option value="Thursday">الخميس</option>
                                 <option value="Friday">الجمعة</option>
+                                <option value="Saturday">السبت</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -410,13 +385,13 @@
                 <div class="form-group">
                     <select id="filterDay" onchange="renderLessons()">
                         <option value="ALL">عرض كل الأيام</option>
-                        <option value="Saturday">السبت</option>
                         <option value="Sunday">الأحد</option>
                         <option value="Monday">الإثنين</option>
                         <option value="Tuesday">الثلاثاء</option>
                         <option value="Wednesday">الأربعاء</option>
                         <option value="Thursday">الخميس</option>
                         <option value="Friday">الجمعة</option>
+                        <option value="Saturday">السبت</option>
                     </select>
                 </div>
                 <div id="lessonsList">لا يوجد دروس بعد.</div>
@@ -486,47 +461,15 @@
     </nav>
 
     <script>
-        // الجداول الجاهزة من الصور المرفقة
-        const defaultSchedules = {
-            ahmed: [
-                { id: 101, title: 'أحياء', day: 'Saturday', startTime: '08:00', endTime: '10:00' },
-                { id: 102, title: 'فيزياء', day: 'Saturday', startTime: '10:00', endTime: '12:00' },
-                { id: 103, title: 'عربي', day: 'Saturday', startTime: '13:00', endTime: '14:00' },
-                { id: 104, title: 'رياضيات', day: 'Saturday', startTime: '14:30', endTime: '16:00' },
-                { id: 105, title: 'مواد شرعية', day: 'Saturday', startTime: '20:00', endTime: '21:00' },
-                { id: 106, title: 'كيمياء', day: 'Sunday', startTime: '15:00', endTime: '17:00' },
-                { id: 107, title: 'رياضيات', day: 'Monday', startTime: '08:00', endTime: '09:30' },
-                { id: 108, title: 'إنجليزي', day: 'Monday', startTime: '11:00', endTime: '12:30' },
-                { id: 109, title: 'أحياء', day: 'Tuesday', startTime: '08:00', endTime: '10:00' },
-                { id: 110, title: 'فيزياء', day: 'Tuesday', startTime: '10:00', endTime: '12:00' },
-                { id: 111, title: 'عربي', day: 'Tuesday', startTime: '13:00', endTime: '14:00' },
-                { id: 112, title: 'مواد شرعية', day: 'Tuesday', startTime: '20:00', endTime: '21:00' },
-                { id: 113, title: 'رياضيات', day: 'Wednesday', startTime: '10:30', endTime: '12:00' },
-                { id: 114, title: 'كيمياء', day: 'Wednesday', startTime: '15:00', endTime: '17:00' },
-                { id: 115, title: 'مواد شرعية', day: 'Wednesday', startTime: '20:00', endTime: '21:00' },
-                { id: 116, title: 'رياضيات', day: 'Thursday', startTime: '08:00', endTime: '09:30' },
-                { id: 117, title: 'إنجليزي', day: 'Thursday', startTime: '11:00', endTime: '12:30' },
-                { id: 118, title: 'عربي', day: 'Thursday', startTime: '18:45', endTime: '19:45' },
-                { id: 119, title: 'كيمياء', day: 'Friday', startTime: '08:00', endTime: '10:00' }
-            ],
-            mohamed: [
-                { id: 201, title: 'عربي', day: 'Saturday', startTime: '09:00', endTime: '10:00' },
-                { id: 202, title: 'دراسات', day: 'Saturday', startTime: '12:00', endTime: '13:00' },
-                { id: 203, title: 'تكنولوجيا', day: 'Saturday', startTime: '18:00', endTime: '19:00' },
-                { id: 204, title: 'رياضيات', day: 'Sunday', startTime: '14:00', endTime: '15:00' },
-                { id: 205, title: 'علوم', day: 'Sunday', startTime: '16:00', endTime: '17:00' },
-                { id: 206, title: 'إنجليزي', day: 'Monday', startTime: '10:00', endTime: '11:00' },
-                { id: 207, title: 'دراسات', day: 'Monday', startTime: '16:00', endTime: '17:00' },
-                { id: 208, title: 'عربي', day: 'Tuesday', startTime: '09:00', endTime: '10:00' },
-                { id: 209, title: 'تكنولوجيا', day: 'Tuesday', startTime: '18:00', endTime: '19:00' },
-                { id: 210, title: 'رياضيات', day: 'Wednesday', startTime: '14:00', endTime: '15:00' },
-                { id: 211, title: 'علوم', day: 'Wednesday', startTime: '16:00', endTime: '17:00' },
-                { id: 212, title: 'إنجليزي', day: 'Thursday', startTime: '10:00', endTime: '11:00' },
-                { id: 213, title: 'علوم', day: 'Friday', startTime: '14:00', endTime: '15:00' }
-            ]
-        };
+        // تسجيل الـ Service Worker ليعمل التطبيق بدون إنترنت ويصبح قابلاً للتثبيت كـ PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered successfully!', reg))
+                    .catch(err => console.error('Service Worker Registration Failed:', err));
+            });
+        }
 
-        let currentStudent = 'ahmed';
         let lessons = [];
         let isReadOnly = false;
         let audioCtx = null;
@@ -568,33 +511,19 @@
                     document.getElementById('shareSectionCard').style.display = 'none';
                 } catch (e) {
                     console.error("خطأ في قراءة رابط المشاركة", e);
-                    loadStudentData();
+                    loadLocalData();
                 }
             } else {
-                loadStudentData();
+                loadLocalData();
             }
         }
 
-        function loadStudentData() {
-            const stored = localStorage.getItem(`schedule_${currentStudent}`);
-            if (stored) {
-                lessons = JSON.parse(stored);
-            } else {
-                lessons = [...defaultSchedules[currentStudent]];
-                localStorage.setItem(`schedule_${currentStudent}`, JSON.stringify(lessons));
-            }
-        }
-
-        function changeStudentProfile() {
-            currentStudent = document.getElementById('studentSelect').value;
-            loadStudentData();
-            saveAndSync();
+        function loadLocalData() {
+            lessons = JSON.parse(localStorage.getItem('my_schedule')) || [];
         }
 
         function saveAndSync() {
-            if (!isReadOnly) {
-                localStorage.setItem(`schedule_${currentStudent}`, JSON.stringify(lessons));
-            }
+            localStorage.setItem('my_schedule', JSON.stringify(lessons));
             renderLessons();
             checkCurrentLesson();
         }
@@ -671,7 +600,7 @@
                     <div class="lesson-details-row">
                         <span class="badge-day">${dayNamesAr[l.day]}</span>
                         <span class="subject-title">${l.title}</span>
-                        <span class="time-range">(${l.startTime} - ${l.endTime})</span>
+                        <span class="time-range">(${l.startTime} -${l.endTime})</span>
                     </div>
                     ${!isReadOnly ? `<button class="delete-btn" onclick="deleteLesson(${l.id})">حذف</button>` : ''}
                 </div>
@@ -842,7 +771,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lessons, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `schedule_${currentStudent}_backup.json`);
+            dlAnchor.setAttribute("download", "schedule_backup.json");
             dlAnchor.click();
         }
 
@@ -861,14 +790,6 @@
                 }
             };
             reader.readAsText(event.target.files[0]);
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('PWA Service Worker registered'))
-                    .catch(err => console.log('PWA Service Worker failed', err));
-            });
         }
 
         initData();
