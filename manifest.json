@@ -1,23 +1,18 @@
 {
-  "short_name": "الجدول الدراسي",
-  "name": "منظم المواعيد والدروس الشامل",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  "name": "جدول الدروس",
+  "short_name": "الجدول",
+  "description": "تطبيق جدول الدروس والتنبيهات",
   "start_url": "./index.html",
+  "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "display": "standalone",
   "orientation": "portrait",
-  "dir": "rtl",
-  "lang": "ar"
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
